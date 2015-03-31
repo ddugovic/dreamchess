@@ -296,7 +296,6 @@ case $host_os in
 esac
 
 AC_CHECK_LIB(pthread, pthread_create, [have_pthread="yes" PTHREAD_LIBS="-lpthread"], [have_pthread="no"])
-AC_CHECK_HEADER([mxml.h], [], [AC_MSG_ERROR([Cannot find Mini-XML header file.])])
 AC_CHECK_LIB(mxml, mxmlLoadFile, [MXML_LIBS="-lmxml"], [AC_MSG_ERROR([Cannot find Mini-XML library.])], [${PTHREAD_LIBS}])
 if test x"$have_pthread" = xyes; then
 	AC_NEEDS(mxml, pthread, mxmlLoadFile,
