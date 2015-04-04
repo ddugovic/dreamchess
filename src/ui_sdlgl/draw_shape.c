@@ -20,7 +20,7 @@
 
 #include "ui_sdlgl.h"
 
-void draw_tri(int x1, int y1, int x2, int y2, int x3, int y3, gg_colour_t *col)
+void draw_tri(float x1, float y1, float x2, float y2, float x3, float y3, gg_colour_t *col)
 {
     glColor4f(col->r, col->g, col->b, col->a);
     glBegin(GL_TRIANGLES);

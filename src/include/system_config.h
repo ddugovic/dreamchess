@@ -23,7 +23,7 @@
 
 #include "options.h"
 
-#define MAXLEVEL 10
+#define MAXLEVEL 20
 
 void config_init(void);
 void config_save(void);

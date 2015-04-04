@@ -595,6 +595,7 @@ int dreamchess(void *data)
 
         comm_send("new\n");
 
+        comm_send("level 0 %i %i\n", config->cpu_level, config->cpu_level);
         comm_send("sd %i\n", config->cpu_level);
 
         if (config->difficulty == 0)

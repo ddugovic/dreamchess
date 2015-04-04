@@ -19,6 +19,7 @@
 */
 
 #include "ui_sdlgl.h"
+#include <math.h>
 
 void draw_move_lists( coord3_t offset, gg_colour_t *col_normal, gg_colour_t *col_high );
 void draw_capture_list( coord3_t offset, gg_colour_t *col);
@@ -64,45 +65,55 @@ float get_ui_trans_pos(void)
 
 static void draw_health_bar( coord3_t position, coord3_t size, int white )
 {
-    int health;
-    float bar_len;
+    float health, max_health=39.0f;
+    float health_len, damage_len, space_len=0.0f;
 
     if ( white )
     {
-        health = 36-((get_board()->captured[WHITE_PAWN])+
+        health = max_health-((get_board()->captured[WHITE_PAWN])+
             (get_board()->captured[WHITE_ROOK]*5)+(get_board()->captured[WHITE_BISHOP]*3)+
             (get_board()->captured[WHITE_KNIGHT]*3)+(get_board()->captured[WHITE_QUEEN]*9));
     }
     else
     {
-        health = 36-((get_board()->captured[BLACK_PAWN])+
+        health = max_health-((get_board()->captured[BLACK_PAWN])+
             (get_board()->captured[BLACK_ROOK]*5)+(get_board()->captured[BLACK_BISHOP]*3)+
             (get_board()->captured[BLACK_KNIGHT]*3)+(get_board()->captured[BLACK_QUEEN]*9));
     }
 
-    if ( health > 36 )
-        health=36;
-    if ( health < 2 )
-        health=2;
+    if ( health < 1 )
+        health=1;
 
-    gg_colour_t top_left_col={0.59f,0.60f,0.86f,1.0f};
-    gg_colour_t bottom_left_col={0.19f,0.20f,0.46f,1.0f};
-    gg_colour_t top_right_col={0.79f,0.80f,1.0f,1.0f};
-    gg_colour_t bottom_right_col={0.59f,0.60f,0.86f,1.0f};
+    gg_colour_t damage_col_1={0.46f,0.00f,0.02f,1.0f};
+    gg_colour_t damage_col_0={0.86f,0.07f,0.06f,1.0f};
+    gg_colour_t damage_col_3={0.86f,0.07f,0.06f,1.0f};
+    gg_colour_t damage_col_2={1.00f,0.27f,0.08f,1.0f};
+    gg_colour_t health_col_0={0.19f,0.20f,0.46f,1.0f};
+    gg_colour_t health_col_1={0.59f,0.60f,0.86f,1.0f};
+    gg_colour_t health_col_2={0.59f,0.60f,0.86f,1.0f};
+    gg_colour_t health_col_3={0.79f,0.80f,1.00f,1.0f};
 
-    bar_len=(size.x)*((float)health/36.0f);
+    float len = size.x-2.0f;
+    health_len = len*log10f((9.0f*health/max_health)+1.0f);
+    damage_len = len-health_len;
+    if ( health < max_health )
+        space_len = 2.0f;
 
     if ( white )
     {
-        draw_rect_fill( position.x, position.y, bar_len, size.y, get_col(COL_WHITE));
-        draw_rect_fill_gradient( position.x+1, position.y+1, bar_len-2, size.y-2,
-            &bottom_left_col, &bottom_right_col, &top_left_col, &top_right_col);
+        draw_rect_fill( position.x, position.y, size.x, size.y, get_col(COL_WHITE));
+        draw_rect_fill_gradient( position.x+1+health_len+space_len, position.y+1, damage_len-space_len, size.y-2,
+            &damage_col_0, &damage_col_1, &damage_col_2, &damage_col_3);
+        draw_rect_fill_gradient( position.x+1, position.y+1, health_len, size.y-2,
+            &health_col_0, &health_col_1, &health_col_2, &health_col_3);
     }
     else
     {
-        draw_rect_fill( position.x+(size.x-bar_len), position.y, bar_len, size.y, get_col(COL_WHITE));
-        draw_rect_fill_gradient( position.x+1+(size.x-bar_len), position.y+1, bar_len-2, size.y-2,
-            &bottom_right_col, &bottom_left_col, &top_right_col, &top_left_col);
+        draw_rect_fill( position.x, position.y, size.x, size.y, get_col(COL_WHITE));
+        draw_rect_fill_gradient( position.x+1, position.y+1, damage_len-space_len, size.y-2,
+            &damage_col_1, &damage_col_0, &damage_col_3, &damage_col_2);
+        draw_rect_fill_gradient( position.x+1+damage_len, position.y+1, health_len, size.y-2,
+            &health_col_1, &health_col_0, &health_col_3, &health_col_2);
     }
 }
 
