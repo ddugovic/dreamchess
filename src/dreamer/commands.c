@@ -516,13 +516,13 @@ int command_usermove(state_t *state, char *command)
             return 0;
         }
 
-	if (state->mode == MODE_WHITE || state->mode == MODE_BLACK)
+	if (state->mode & MODE_WHITE || state->mode & MODE_BLACK)
 		timer_start(&state->engine_time);
 
         do_move(state, move);
         check_game_end(state);
 
-        if (state->mode == MODE_IDLE)
+        if (state->mode == MODE_FORCE)
             state->mode = (state->board.current_player == SIDE_WHITE?
                            MODE_WHITE : MODE_BLACK);
 
@@ -596,7 +596,7 @@ void command_handle(state_t *state, char *command)
         pv_clear();
         repetition_init(&state->board);
         state->done = 0;
-        state->mode = MODE_BLACK;
+        state->mode = MODE_FORCE;
         state->flags = 0;
         state->depth = MAX_DEPTH;
 
@@ -669,6 +669,18 @@ void command_handle(state_t *state, char *command)
         return;
     }
 
+    if (!strcmp(command, "analyze"))
+    {
+        if (state->mode != MODE_FORCE)
+        {
+            NOT_NOW(command);
+            return;
+        }
+
+        state->mode = MODE_WHITE | MODE_BLACK;
+        return;
+    }
+
     if (!strncmp(command, "sd", 2))
     {
         char *number = strchr(command, ' ');
@@ -712,6 +724,8 @@ void command_handle(state_t *state, char *command)
                 NOT_NOW(command);
                 return;
             }
+            break;
+        case MODE_WHITE | MODE_BLACK:
             break;
         case MODE_FORCE:
             break;

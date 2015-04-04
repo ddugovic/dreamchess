@@ -28,7 +28,11 @@
 
 #include "debug.h"
 
+#if NDEBUG
 static int dbg_level = 1;
+#else
+static int dbg_level = 3;
+#endif
 
 /* Debug levels:
 ** 0: Silent

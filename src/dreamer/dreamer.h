@@ -24,11 +24,10 @@
 #include "board.h"
 #include "timer.h"
 
-#define MODE_WHITE 0
-#define MODE_BLACK 1
-#define MODE_IDLE 2
-#define MODE_FORCE 3
-#define MODE_QUIT 4
+#define MODE_QUIT 0
+#define MODE_WHITE 1
+#define MODE_BLACK 2
+#define MODE_FORCE 4
 
 #define FLAG_IGNORE_MOVE (1<<0)
 #define FLAG_NEW_GAME (1<<1)

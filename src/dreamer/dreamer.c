@@ -69,9 +69,9 @@ static state_t state;
 
 int my_turn(state_t *state)
 {
-    return (((state->mode == MODE_WHITE) &&
+    return (((state->mode & MODE_WHITE) &&
              (state->board.current_player == SIDE_WHITE))
-            || ((state->mode == MODE_BLACK) &&
+            || ((state->mode & MODE_BLACK) &&
                 (state->board.current_player == SIDE_BLACK)));
 }
 
@@ -308,7 +308,7 @@ int engine(void *data)
             free(s);
         }
 
-        if (state.mode != MODE_IDLE && state.mode != MODE_FORCE && !state.done)
+        if (state.mode != MODE_FORCE && !state.done)
         {
             if (my_turn(&state))
             {

@@ -332,14 +332,9 @@ int game_load( int slot )
     ui->update(board, NULL);
 
     if (config->player[board->turn] == PLAYER_ENGINE)
-        comm_send("go\n");
+        comm_send("go\n"); // TODO: In analyze mode, use "hint" instead
     else if (config->player[OPPONENT(board->turn)] == PLAYER_ENGINE)
-    {
-        if (board->turn == WHITE)
-            comm_send("white\n");
-        else
-            comm_send("black\n");
-    }
+        comm_send("playother\n");
 
     return retval;
 }
@@ -599,10 +594,8 @@ int dreamchess(void *data)
         comm_send("xboard\n");
 
         comm_send("new\n");
-        comm_send("random\n");
 
         comm_send("sd %i\n", config->cpu_level);
-        comm_send("depth %i\n", config->cpu_level);
 
         if (config->difficulty == 0)
 	    comm_send("noquiesce\n");
@@ -611,7 +604,11 @@ int dreamchess(void *data)
 	    && config->player[BLACK] == PLAYER_UI)
 	    comm_send("force\n");
 
-        if (config->player[WHITE] == PLAYER_ENGINE)
+        if (config->player[WHITE] == PLAYER_ENGINE
+	    && config->player[BLACK] == PLAYER_ENGINE)
+	    comm_send("analyze\n");
+
+        else if (config->player[WHITE] == PLAYER_ENGINE)
 	    comm_send("go\n");
 
         in_game = 1;

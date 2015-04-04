@@ -80,6 +80,10 @@ static int menu_title_start(gg_widget_t *widget, gg_widget_t *emitter, void *dat
     case GAME_TYPE_HUMAN_VS_HUMAN:
         get_config()->player[WHITE] = PLAYER_UI;
         get_config()->player[BLACK] = PLAYER_UI;
+        break;
+    case GAME_TYPE_CPU_VS_CPU:
+        get_config()->player[WHITE] = PLAYER_ENGINE;
+        get_config()->player[BLACK] = PLAYER_ENGINE;
     }
 
     get_config()->difficulty = selected_difficulty;

@@ -135,6 +135,7 @@ void config_init(void)
 	option_add_value(option, "Human vs. CPU", NULL);
 	option_add_value(option, "CPU vs. Human", NULL);
 	option_add_value(option, "Human vs. Human", NULL);
+	option_add_value(option, "CPU vs. CPU", NULL);
 
 	option = option_group_add_option(config, "difficulty");
 	option_add_value(option, "Easy", NULL);
@@ -142,10 +143,10 @@ void config_init(void)
 	option_select_value_by_name(option, "Normal");
 
 	option = option_group_add_option(config, "level");
-	for (i = 1; i <= 8; i++) {
-		char buf[2];
+	for (i = 1; i <= MAXLEVEL; i++) {
+		char buf[3];
 
-		snprintf(buf, 2, "%d", i);
+		snprintf(buf, 3, "%d", i);
 		option_add_value(option, buf, NULL);
 	}
 

@@ -6,7 +6,7 @@ AC_INIT([dreamchess],[0.2.1-RC2])
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/main.c])
-AC_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADER([src/config.h])
 
 # Checks for programs.
 AC_PROG_CC
@@ -314,6 +314,7 @@ if test "$host_os" != "mingw32"; then
 fi
 
 # Checks for header files.
+AC_HEADER_ASSERT
 AC_HEADER_STDC
 AC_CHECK_HEADERS([stdlib.h string.h getopt.h])
 AC_CHECK_FUNCS(getopt_long strdup vsnprintf usleep)

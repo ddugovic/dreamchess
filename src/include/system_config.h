@@ -23,6 +23,8 @@
 
 #include "options.h"
 
+#define MAXLEVEL 10
+
 void config_init(void);
 void config_save(void);
 option_t *config_get_option(char *name);

@@ -407,6 +407,14 @@ static int set_video( int width, int height, int fullscreen, int ms )
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
     SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 1 );
 
+    int bpp = SDL_VideoModeOK(width, height, SCREEN_BPP, video_flags);
+    if (!bpp)
+    {
+        DBG_ERROR("video mode not available: %ix%i; %i bpp; fullscreen %s",
+            width, height, SCREEN_BPP, fullscreen ? "on" : "off");
+        return 1;
+    }
+
     if (ms) {
         SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1 );
     } else {
@@ -414,17 +422,16 @@ static int set_video( int width, int height, int fullscreen, int ms )
     }
     SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, ms );
 
-    int bpp = SDL_VideoModeOK(width, height, SCREEN_BPP, video_flags);
-
-    if (!bpp)
-    {
-        DBG_ERROR("video mode not available: %ix%i; %i bpp; fullscreen %s; %ix multisampling",
-            width, height, SCREEN_BPP, fullscreen ? "on" : "off", ms);
-        return 1;
-    }
-
     surface = SDL_SetVideoMode( width, height, bpp, video_flags );
-    if ( !surface )
+    if (ms && !surface)
+    {
+        DBG_ERROR("failed to set video mode: %ix%i; %i bpp; fullscreen %s; %ix multisampling: %s",
+            width, height, bpp, fullscreen ? "on" : "off", ms, SDL_GetError());
+        SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 0 );
+        SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, ms = 0 );
+        surface = SDL_SetVideoMode( width, height, bpp, video_flags );
+    }
+    if (!surface)
     {
         DBG_ERROR("failed to set video mode: %ix%i; %i bpp; fullscreen %s; %ix multisampling: %s",
             width, height, bpp, fullscreen ? "on" : "off", ms, SDL_GetError());
